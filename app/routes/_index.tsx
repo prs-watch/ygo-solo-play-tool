@@ -13,7 +13,10 @@ import { v4 as uuidv4 } from 'uuid'
  * @returns - メタファンクション
  */
 export const meta: MetaFunction = () => {
-  return [{ title: 'YGO Solo-Play Tool' }]
+  return [
+    { title: 'YGO Solo-Play Tool' },
+    { name: 'description', content: 'Tool to play YGO for solo.' }
+  ]
 }
 
 /**
