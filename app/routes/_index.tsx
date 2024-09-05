@@ -14,7 +14,8 @@ import { v4 as uuidv4 } from 'uuid'
  */
 export const meta: MetaFunction = () => {
   return [
-    { title: 'YGO Solo-Play Tool', description: 'Tool to play YGO as solo.' },
+    { title: 'YGO Solo-Play Tool' },
+    { name: 'description', content: 'Tool to play YGO for solo.' }
   ]
 }
 
