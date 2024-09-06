@@ -7,7 +7,7 @@ A tool that allows you to play Yu-Gi-Oh OCG as solo. It provides you to followin
 
 ## Demo
 
-<video src="./ygo-solo-play-tool-demo.mp4" controls="true" width=600 />
+<video src="./ygo-solo-play-tool-demo.mp4" controls="true" width=600></video>
 
 ## For users
 
