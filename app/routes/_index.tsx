@@ -12,7 +12,12 @@ import { Scroll } from '~/components/originals/scroll'
 
 import domtoimage from 'dom-to-image'
 import { v4 as uuidv4 } from 'uuid'
-import { type GameState, type ZoneType, Zone, useGameStates } from '~/lib/gameState'
+import {
+  type GameState,
+  type ZoneType,
+  Zone,
+  useGameStates,
+} from '~/lib/gameState'
 
 /**
  * Remix app が `<Meta />` でロードするメタ情報.
@@ -22,7 +27,7 @@ import { type GameState, type ZoneType, Zone, useGameStates } from '~/lib/gameSt
 export const meta: MetaFunction = () => {
   return [
     { title: 'YGO Solo-Play Tool' },
-    { name: 'description', content: 'Tool to play YGO for solo.' }
+    { name: 'description', content: 'Tool to play YGO for solo.' },
   ]
 }
 
@@ -186,10 +191,7 @@ export default function Index() {
   }, [])
 
   return (
-    <div className='container mx-auto p-4'>
-      <div className='flex justify-between items-center mb-4'>
-        <h1 className='text-2xl font-bold'>YGO Solo-Play Tool</h1>
-      </div>
+    <>
       <div className='items-center'>
         <Button className='m-2' variant='outline' onClick={handleSave}>
           <Save className='mr-2 h-4 w-4' />
@@ -200,9 +202,7 @@ export default function Index() {
           Reset
         </Button>
       </div>
-      <Scroll
-        ref={scrollable} isVertical={false}
-      >
+      <Scroll ref={scrollable} isVertical={false}>
         <div className='flex space-x-4 p-4'>
           {gameStates.map((state, index) => (
             <Card key={state.id} className='w-[370px] flex-shrink-0'>
@@ -237,6 +237,6 @@ export default function Index() {
           </Button>
         </div>
       </Scroll>
-    </div>
+    </>
   )
 }
