@@ -1,9 +1,15 @@
 import type { MetaFunction } from '@remix-run/node'
 
+// react hooks
 import { useCallback, useRef, useEffect } from 'react'
+
+// icons
 import { Plus, Trash2, Upload, RotateCcw, Save } from 'lucide-react'
+// components
 import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Scroll } from '~/components/originals/scroll'
+
 import domtoimage from 'dom-to-image'
 import { v4 as uuidv4 } from 'uuid'
 import { type GameState, type ZoneType, Zone, useGameStates } from '~/lib/gameState'
@@ -194,9 +200,8 @@ export default function Index() {
           Reset
         </Button>
       </div>
-      <div
-        ref={scrollable}
-        className='overflow-x-auto whitespace-nowrap w-full'
+      <Scroll
+        ref={scrollable} isVertical={false}
       >
         <div className='flex space-x-4 p-4'>
           {gameStates.map((state, index) => (
@@ -231,7 +236,7 @@ export default function Index() {
             <Plus className='m-2 h-4 w-4' />
           </Button>
         </div>
-      </div>
+      </Scroll>
     </div>
   )
 }
