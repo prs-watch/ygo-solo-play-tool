@@ -18,7 +18,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <div className='container mx-auto p-4'>
+          <div className='flex justify-between items-center mb-4'>
+            <h1 className='text-2xl font-bold'>YGO Solo-Play Tool</h1>
+          </div>
+          {children}
+        </div>
         <SpeedInsights />
         <ScrollRestoration />
         <Scripts />

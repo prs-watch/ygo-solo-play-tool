@@ -1,11 +1,23 @@
 import type { MetaFunction } from '@remix-run/node'
 
-import React, { useState, useCallback, useRef } from 'react'
+// react hooks
+import { useCallback, useRef, useEffect } from 'react'
+
+// icons
 import { Plus, Trash2, Upload, RotateCcw, Save } from 'lucide-react'
+// components
 import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Scroll } from '~/components/originals/scroll'
+
 import domtoimage from 'dom-to-image'
 import { v4 as uuidv4 } from 'uuid'
+import {
+  type GameState,
+  type ZoneType,
+  Zone,
+  useGameStates,
+} from '~/lib/gameState'
 
 /**
  * Remix app が `<Meta />` でロードするメタ情報.
@@ -15,30 +27,8 @@ import { v4 as uuidv4 } from 'uuid'
 export const meta: MetaFunction = () => {
   return [
     { title: 'YGO Solo-Play Tool' },
-    { name: 'description', content: 'Tool to play YGO for solo.' }
+    { name: 'description', content: 'Tool to play YGO for solo.' },
   ]
-}
-
-/**
- * 盤面型.
- */
-type Zone = 'hand' | 'field' | 'graveyard' | 'banished'
-
-/**
- * ゲームStep型. 各Stepの盤面状態を保持する.
- *
- * @property id - Stepに振り出されるアプリで一意なid
- * @property hand - 手札に配置されるカード画像URLリスト
- * @property field - フィールドに配置されるカード画像URLリスト
- * @property graveyard - 墓地に配置されるカード画像URLリスト
- * @property banished - 除外ゾーンに配置されるカード画像URLリスト
- */
-type GameState = {
-  id: number
-  hand: string[]
-  field: string[]
-  graveyard: string[]
-  banished: string[]
 }
 
 /**
@@ -47,10 +37,15 @@ type GameState = {
  * @returns - アプリケーション定義
  */
 export default function Index() {
-  // 盤面推移
-  const [gameStates, setGameStates] = useState<GameState[]>([])
-  // Stepに付与する一意なid
-  const [nextId, setNextId] = useState(1)
+  const {
+    gameStates,
+    nextId,
+    addGameState,
+    removeGameState,
+    setGameStates,
+    setNextId,
+  } = useGameStates()
+
   // スクロールエリアへの参照
   const scrollable = useRef<HTMLDivElement>(null)
 
@@ -67,35 +62,11 @@ export default function Index() {
   }
 
   /**
-   * 新規Stepを追加する.
-   */
-  const addGameState = () => {
-    const newState: GameState = {
-      id: nextId,
-      hand: [],
-      field: [],
-      graveyard: [],
-      banished: [],
-    }
-    setGameStates([...gameStates, newState])
-    setNextId(nextId + 1)
-  }
-
-  /**
-   * 既存のStepを削除する.
-   *
-   * @param id - Stepに付与されるid
-   */
-  const removeGameState = (id: number) => {
-    setGameStates(gameStates.filter((state) => state.id !== id))
-  }
-
-  /**
    * DaDのうちドロップ時の挙動. 画像が表示だけされる様にする.
    * 同一の画像をアップロードした場合は以前の結果を流用出来る様にuseCallbackを使用.
    */
   const handleDrop = useCallback(
-    (stateId: number, zone: Zone, files: FileList | null) => {
+    (stateId: number, zone: ZoneType, files: FileList | null) => {
       if (files) {
         const newImages = Array.from(files).map((file) =>
           URL.createObjectURL(file)
@@ -119,23 +90,6 @@ export default function Index() {
    */
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-  }
-
-  /**
-   * 表示している画像を削除する.
-   *
-   * @param stateId - Stepに一意に付与されるid
-   * @param zone - 対象ゾーン
-   * @param index - カード順序
-   */
-  const removeImage = (stateId: number, zone: Zone, index: number) => {
-    setGameStates((prevStates) =>
-      prevStates.map((state) =>
-        state.id === stateId
-          ? { ...state, [zone]: state[zone].filter((_, i) => i !== index) }
-          : state
-      )
-    )
   }
 
   /**
@@ -169,13 +123,30 @@ export default function Index() {
   }
 
   /**
+   * 表示している画像を削除する.
+   *
+   * @param stateId - Stepに一意に付与されるid
+   * @param zone - 対象ゾーン
+   * @param index - カード順序
+   */
+  const removeImage = (stateId: number, zone: ZoneType, index: number) => {
+    setGameStates((prevStates) =>
+      prevStates.map((state) =>
+        state.id === stateId
+          ? { ...state, [zone]: state[zone].filter((_, i) => i !== index) }
+          : state
+      )
+    )
+  }
+
+  /**
    * Stepの中に表示するゾーンエリアのレンダリング.
    *
    * @param state - 対象のStep
    * @param zone - レンダリングするZone
    * @returns - ゾーンエリア
    */
-  const renderZone = (state: GameState, zone: Zone) => {
+  const renderZone = (state: GameState, zone: ZoneType) => {
     return (
       <div className='mb-2'>
         <h3 className='text-sm font-semibold mb-1 capitalize'>{zone}</h3>
@@ -215,15 +186,12 @@ export default function Index() {
     )
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     addGameState()
   }, [])
 
   return (
-    <div className='container mx-auto p-4'>
-      <div className='flex justify-between items-center mb-4'>
-        <h1 className='text-2xl font-bold'>YGO Solo-Play Tool</h1>
-      </div>
+    <>
       <div className='items-center'>
         <Button className='m-2' variant='outline' onClick={handleSave}>
           <Save className='mr-2 h-4 w-4' />
@@ -234,10 +202,7 @@ export default function Index() {
           Reset
         </Button>
       </div>
-      <div
-        ref={scrollable}
-        className='overflow-x-auto whitespace-nowrap w-full'
-      >
+      <Scroll ref={scrollable} isVertical={false}>
         <div className='flex space-x-4 p-4'>
           {gameStates.map((state, index) => (
             <Card key={state.id} className='w-[370px] flex-shrink-0'>
@@ -255,10 +220,10 @@ export default function Index() {
                 </CardTitle>
               </CardHeader>
               <CardContent className='p-3 pt-0'>
-                {renderZone(state, 'hand')}
-                {renderZone(state, 'field')}
-                {renderZone(state, 'graveyard')}
-                {renderZone(state, 'banished')}
+                {renderZone(state, Zone.Hand)}
+                {renderZone(state, Zone.Field)}
+                {renderZone(state, Zone.Graveyard)}
+                {renderZone(state, Zone.Banished)}
               </CardContent>
             </Card>
           ))}
@@ -271,7 +236,7 @@ export default function Index() {
             <Plus className='m-2 h-4 w-4' />
           </Button>
         </div>
-      </div>
-    </div>
+      </Scroll>
+    </>
   )
 }
