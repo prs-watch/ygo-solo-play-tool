@@ -229,7 +229,7 @@ export default function Index() {
           ))}
           <Button
             onClick={() => {
-              addGameState()
+              addGameState(gameStates.length - 1)
               setTimeout(scrollToRight, 0)
             }}
           >

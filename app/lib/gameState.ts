@@ -38,16 +38,24 @@ export const useGameStates = () => {
   const [nextId, setNextId] = useState(1)
 
   /**
-   * 新規Stepを追加する.
+   * 新規Stepを追加する. 既存Stepへの追加の場合は前回盤面をコピーする.
+   * 
+   * @param index - 直前Stepのindex
    */
-  const addGameState = () => {
-    const newState: GameState = {
-      id: nextId,
-      hand: [],
-      field: [],
-      graveyard: [],
-      banished: [],
-    }
+  const addGameState = (prevIndex: number | undefined = undefined) => {
+    const newState: GameState =
+      prevIndex === undefined
+        ? {
+            id: nextId,
+            hand: [],
+            field: [],
+            graveyard: [],
+            banished: [],
+          }
+        : {
+            ...gameStates[prevIndex],
+            id: nextId,
+          }
     setGameStates([...gameStates, newState])
     setNextId(nextId + 1)
   }
