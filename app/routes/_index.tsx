@@ -197,7 +197,7 @@ export default function Index() {
           <Save className='mr-2 h-4 w-4' />
           Save
         </Button>
-        <Button className='m-2' variant='outline' onClick={handleReset}>
+        <Button className='m-2' variant='destructive' onClick={handleReset}>
           <RotateCcw className='mr-2 h-4 w-4' />
           Reset
         </Button>
