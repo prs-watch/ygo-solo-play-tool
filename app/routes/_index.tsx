@@ -1,7 +1,7 @@
 import type { MetaFunction } from '@remix-run/node'
 
 // react hooks
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useEffect, useState } from 'react'
 
 // icons
 import { Plus, Trash2, Upload, RotateCcw, Save } from 'lucide-react'
@@ -48,6 +48,8 @@ export default function Index() {
 
   // スクロールエリアへの参照
   const scrollable = useRef<HTMLDivElement>(null)
+  // DragLeave時に削除する画像. DragLeaveの仕様上、DragStart時に画像を保持しておく必要がある.
+  const [dragImage, setDragImage] = useState<string | null>(null)
 
   /**
    * Stepを追加した際に自動で一番右までスクロールする.
@@ -62,7 +64,7 @@ export default function Index() {
   }
 
   /**
-   * DaDのうちドロップ時の挙動. 画像が表示だけされる様にする.
+   * Drop処理. 画像が表示だけされる様にする.
    * 同一の画像をアップロードした場合は以前の結果を流用出来る様にuseCallbackを使用.
    */
   const handleDrop = useCallback(
@@ -84,12 +86,46 @@ export default function Index() {
   )
 
   /**
-   * DaDのうちドラッグしたまま枠外へ出た場合の処理. 後続処理を止める.
+   * DragOver処理. ドラッグ時のデフォルトイベントをキャンセルする.
    *
    * @param e - ドラッグイベント
    */
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
+  }
+
+  /**
+   * DragStart処理. ドラッグした画像を保持する.
+   *
+   * @param e - ドラッグイベント
+   */
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    setDragImage((e.currentTarget as HTMLImageElement).src)
+  }
+
+  /**
+   * DragLeave処理. ドラッグ中の画像を移動元から削除する.
+   * 
+   * @param stateId - Stepに一意に付与されるid
+   * @param zone - 対象ゾーン
+   */
+  const handleDragLeave = (
+    stateId: number,
+    zone: ZoneType
+  ) => {
+    if (dragImage) {
+      setGameStates((prevStates) =>
+        prevStates.map((state) =>
+          state.id === stateId
+            ? {
+                ...state,
+                [zone]: state[zone].filter((img) => img !== dragImage),
+              }
+            : state
+        )
+      )
+      setDragImage(null)
+    }
   }
 
   /**
@@ -157,6 +193,7 @@ export default function Index() {
             handleDrop(state.id, zone, e.dataTransfer.files)
           }}
           onDragOver={handleDragOver}
+          onDragLeave={() => handleDragLeave(state.id, zone)}
         >
           {state[zone].length === 0 ? (
             <div className='flex items-center justify-center h-full text-gray-400 text-xs'>
@@ -170,6 +207,7 @@ export default function Index() {
                   <img
                     src={img}
                     className='w-full h-full object-cover rounded'
+                    onDragStart={handleDragStart}
                   />
                   <button
                     className='absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
@@ -186,6 +224,7 @@ export default function Index() {
     )
   }
 
+  // 初期表示時に1つだけStepを配置.
   useEffect(() => {
     addGameState()
   }, [])
@@ -197,7 +236,7 @@ export default function Index() {
           <Save className='mr-2 h-4 w-4' />
           Save
         </Button>
-        <Button className='m-2' variant='outline' onClick={handleReset}>
+        <Button className='m-2' variant='destructive' onClick={handleReset}>
           <RotateCcw className='mr-2 h-4 w-4' />
           Reset
         </Button>
