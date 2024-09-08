@@ -6,16 +6,8 @@ import {
   ScrollRestoration,
 } from '@remix-run/react'
 import { SpeedInsights } from '@vercel/speed-insights/remix'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog'
 import './tailwind.css'
-import { Button } from './components/ui/button'
-import { BookText } from 'lucide-react'
+import { Header } from '~/components/originals/header'
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -28,23 +20,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div className='container mx-auto p-4'>
-          <div className='flex justify-between items-center mb-4'>
-            <h1 className='text-2xl font-bold'>YGO Solo-Play Tool</h1>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant='outline' className='m-2'>
-                  <BookText className='mr-2 h-4 w-4' />
-                  How To Use
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Tool DEMO</DialogTitle>
-                </DialogHeader>
-                <img src='ygo-solo-play-tool-demo.gif' />
-              </DialogContent>
-            </Dialog>
-          </div>
+          <Header />
           {children}
         </div>
         <SpeedInsights />
