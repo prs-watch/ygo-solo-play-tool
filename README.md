@@ -19,6 +19,14 @@ You can access [this tool](https://ygo-solo-play-tool.vercel.app/) hosted by Ver
 
 - Node.js 20+
 
+### Setup
+
+```bash
+$ git clone https://github.com/prs-watch/ygo-solo-play-tool.git
+$ cd YOUR_CLONE_PATH
+$ npm install
+```
+
 ### Run dev server
 
 ```bash
@@ -29,4 +37,10 @@ $ npm run dev
 
 ```bash
 $ npm run build
+```
+
+### Generate TypeDoc
+
+```bash
+$ npx typedoc
 ```

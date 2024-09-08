@@ -37,6 +37,9 @@ export const meta: MetaFunction = () => {
  * @returns - アプリケーション定義
  */
 export default function Index() {
+  /**
+   * ゲーム状態を管理するカスタムフック.
+   */
   const {
     gameStates,
     nextId,
@@ -46,9 +49,14 @@ export default function Index() {
     setNextId,
   } = useGameStates()
 
-  // スクロールエリアへの参照
+  /**
+   * スクロールエリアへの参照.
+   */
   const scrollable = useRef<HTMLDivElement>(null)
-  // DragLeave時に削除する画像. DragLeaveの仕様上、DragStart時に画像を保持しておく必要がある.
+
+  /**
+   * ドラッグ中の画像を保持するステート.
+   */
   const [dragImage, setDragImage] = useState<string | null>(null)
 
   /**
