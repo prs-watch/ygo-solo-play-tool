@@ -15,6 +15,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta property='og:type' content='website' />
+        <meta property='og:site_name' content='YGO Solo Play Tool' />
+        <meta property='og:title' content='YGO Solo Play Tool' />
+        <meta
+          property='og:description'
+          content='A tool to help you play Yu-Gi-Oh! by yourself.' />
+        <meta property='og:image' content='og-image.png' />
         <Meta />
         <Links />
       </head>
