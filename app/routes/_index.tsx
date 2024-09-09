@@ -27,7 +27,7 @@ import {
 export const meta: MetaFunction = () => {
   return [
     { title: 'YGO Solo-Play Tool' },
-    { name: 'description', content: 'Tool to play YGO for solo.' },
+    { name: 'description', content: 'A tool for solo playing Yu-Gi-Oh!' },
   ]
 }
 
