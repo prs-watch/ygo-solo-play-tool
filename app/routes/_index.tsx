@@ -147,6 +147,7 @@ export default function Index() {
         field: [],
         graveyard: [],
         banished: [],
+        extra: [],
       },
     ])
     setNextId(nextId + 1)
@@ -271,6 +272,7 @@ export default function Index() {
                 {renderZone(state, Zone.Field)}
                 {renderZone(state, Zone.Graveyard)}
                 {renderZone(state, Zone.Banished)}
+                {renderZone(state, Zone.Extra)}
               </CardContent>
             </Card>
           ))}

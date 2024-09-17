@@ -7,7 +7,8 @@ export const Zone = {
   Hand: 'hand',
   Field: 'field',
   Graveyard: 'graveyard',
-  Banished: 'banished'
+  Banished: 'banished',
+  Extra: 'extra',
 } as const
 export type ZoneType = typeof Zone[keyof typeof Zone]
 
@@ -19,6 +20,7 @@ export type ZoneType = typeof Zone[keyof typeof Zone]
  * @property field - フィールドに配置されるカード画像URLリスト
  * @property graveyard - 墓地に配置されるカード画像URLリスト
  * @property banished - 除外ゾーンに配置されるカード画像URLリスト
+ * @property extra - エクストラデッキに配置されるカード画像URLリスト
  */
 export type GameState = {
   id: number
@@ -26,6 +28,7 @@ export type GameState = {
   [Zone.Field]: string[]
   [Zone.Graveyard]: string[]
   [Zone.Banished]: string[]
+  [Zone.Extra]: string[]
 }
 
 /**
@@ -51,6 +54,7 @@ export const useGameStates = () => {
             field: [],
             graveyard: [],
             banished: [],
+            extra: [],
           }
         : {
             ...gameStates[prevIndex],
