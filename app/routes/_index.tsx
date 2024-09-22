@@ -160,8 +160,10 @@ export default function Index() {
     const a = document.createElement('a')
     a.href = await domtoimage.toPng(scrollable.current as Node, {
       // Stepの幅 + marginを必要幅として計算
-      width: (370 + 16) * gameStates.length,
-      height: scrollable.current?.clientHeight,
+      // 52はボタンの幅
+      // 縦はスクロールが無いため800固定
+      width: (370 + 16) * gameStates.length + 52,
+      height: 800,
     })
     a.download = `yspt-${uuidv4()}.png`
     a.click()
